@@ -17,6 +17,9 @@ dns_raw = File.readlines("zone")
 def parse_dns(dns_raw)
   dns_records = {}
   dns_raw.each do |line|
+    if line.strip.length <= 0 || line.strip[0] == "#"
+      next
+    end
     record_type, source, destination = line.split(",")
     dns_records[source.strip] = { "record_type" => record_type.strip, "destination" => destination.strip }
   end
@@ -35,6 +38,7 @@ def resolve(dns_records, lookup_chain, domain)
 end
 
 dns_records = parse_dns(dns_raw)
+p dns_records
 lookup_chain = [domain]
 lookup_chain = resolve(dns_records, lookup_chain, domain)
 puts lookup_chain.join(" => ")
